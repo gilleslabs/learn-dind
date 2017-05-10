@@ -35,3 +35,6 @@ docker run -it -d --name swarm_visualizer \
   -p 8000:8080 -e HOST=localhost \
   -v /var/run/docker.sock:/var/run/docker.sock \
   manomarks/visualizer
+
+ docker service create --name rancher --publish 8080:8080 rancher/server
+ 
