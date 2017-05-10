@@ -9,19 +9,18 @@ sudo ufw allow 12377/tcp
 
 # init Swarm master
 docker swarm init --advertise-addr $ip
+sleep 10
 # get join token
 SWARM_TOKEN=$(docker swarm join-token -q worker)
 SWARM_MGR_TOKEN=$(docker swarm join-token -q manager)
 
-
-
 # get Swarm master IP (Docker for VM IP)
 SWARM_MASTER=$(docker info | grep -w 'Node Address' | awk '{print $3}')
-sleep 10
+
 ## Adding a manager
-docker run -d --privileged --name manager2 --hostname=manager2 -p 12377:2377 -p 42375:2375 docker:1.12.1-dind
+docker run -d --privileged --name manager2 --hostname=manager2 -p 12377:2378 -p 42375:2375 docker:1.12.1-dind
 sleep 10
-docker --host=${SWARM_MASTER}:42375 swarm join --token ${SWARM_MGR_TOKEN} --listen-addr ${SWARM_MASTER}:12377 ${SWARM_MASTER}:2377
+docker --host=${SWARM_MASTER}:42375 swarm join --token ${SWARM_MGR_TOKEN}  ${SWARM_MASTER}:2377
 
 # run NUM_WORKERS workers with SWARM_TOKEN
 NUM_WORKERS=3
