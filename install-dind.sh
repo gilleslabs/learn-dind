@@ -38,3 +38,10 @@ docker run -it -d --name swarm_visualizer \
 
  docker service create --name rancher --publish 8080:8080 rancher/server
  
+ sleep 300
+ 
+ for i in $(seq "${NUM_WORKERS}"); do
+     docker --host=${SWARM_MASTER}:${i}2375 run --rm --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/rancher:/var/lib/rancher rancher/agent:v1.2.2 http://${SWARM_MASTER}:8080
+     sleep 120
+ done
+ 
